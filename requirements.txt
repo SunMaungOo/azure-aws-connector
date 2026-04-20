@@ -1,0 +1,4 @@
+boto3==1.42.91
+fastapi==0.136.0
+azure-storage-file-datalake==12.23.0
+uvicorn[standard]==0.44.0
