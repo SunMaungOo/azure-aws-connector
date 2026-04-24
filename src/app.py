@@ -5,7 +5,7 @@ from fastapi import FastAPI,HTTPException
 from model import DataStructure
 from typing import Dict
 from azure_datalake import AzureDataLake
-from config import DATA_LAKE_SAS,DATA_FOLDER,AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY,HOST,PORT
+from config import DATA_LAKE_SAS,DATA_FOLDER,AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY,HOST,PORT,TOKEN
 import uvicorn
 
 logging.basicConfig(
@@ -40,6 +40,14 @@ def upload_file(aws_access_key_id:str,\
 
 @app.post("/transfer/s3",status_code=200)
 def transfer_to_s3(item:DataStructure)->Dict[str,str]:
+
+    if TOKEN is None:
+        raise HTTPException(status_code=500,\
+                           detail="Server not configured with token")
+    
+    if item.token!=TOKEN:
+       raise HTTPException(status_code=401,\
+                           detail="Invalid token")
 
     data_path = Path(DATA_FOLDER)
 

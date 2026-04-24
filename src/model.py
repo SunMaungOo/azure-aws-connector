@@ -8,3 +8,4 @@ class DataStructure(BaseModel):
     s3_bucket:str
     s3_folder_path:str
     s3_file_name:str
+    token:str

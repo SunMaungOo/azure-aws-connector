@@ -27,6 +27,7 @@ docker run -d \
   -e DATA_LAKE_SAS="your-sas-token" \
   -e AWS_ACCESS_KEY_ID="your-key-id" \
   -e AWS_SECRET_ACCESS_KEY="your-secret-key" \
+  -e TOKEN="your-auth-token" \
   sunmaungoo/azure-aws-connector:latest
 ```
 
@@ -38,6 +39,7 @@ docker run -d -p 8000:8000 \
   -e DATA_LAKE_SAS="your-sas-token" \
   -e AWS_ACCESS_KEY_ID="your-key-id" \
   -e AWS_SECRET_ACCESS_KEY="your-secret-key" \
+  -e TOKEN="your-auth-token" \
   azure-aws-connector
 ```
 
@@ -48,6 +50,7 @@ pip install -r requirements.txt
 export DATA_LAKE_SAS="your-sas-token"
 export AWS_ACCESS_KEY_ID="your-key-id"
 export AWS_SECRET_ACCESS_KEY="your-secret-key"
+export TOKEN="your-auth-token"
 python src/app.py
 ```
 
@@ -63,6 +66,7 @@ python src/app.py
 | `DATA_FOLDER` | No | `data` | Local folder used to stage the downloaded file before upload |
 | `HOST` | No | `127.0.0.1` | Host address the server binds to |
 | `PORT` | No | `8000` | Port the server listens on |
+| `TOKEN` | Yes | - | Auth token to configure the server with |
 
 ---
 
@@ -83,6 +87,7 @@ Downloads a file from Azure Data Lake and uploads it to S3.
 | `s3_bucket` | string | Destination S3 bucket name |
 | `s3_folder_path` | string | Destination folder path in S3, e.g. `output/reports` |
 | `s3_file_name` | string | File name to use in S3, e.g. `report.csv` |
+| `token`        | string | Auth token that server have been configure with | 
 
 **Example request:**
 
@@ -96,7 +101,8 @@ curl -X POST http://localhost:8000/transfer/s3 \
     "azure_file_name": "report.csv",
     "s3_bucket": "my-s3-bucket",
     "s3_folder_path": "output/reports",
-    "s3_file_name": "report.csv"
+    "s3_file_name": "report.csv",
+    "token":"yourauthtoken"
   }'
 ```
 
@@ -115,7 +121,8 @@ curl -X POST http://localhost:8000/transfer/s3 \
 |---|---|
 | `422` | Missing or invalid request fields |
 | `500` | Failed to download from Azure Data Lake |
-| `500` | Failed to upload to S3 |
+| `500` | Failed to upload to S3 or Server have not been configure with Auth Token |
+| `401` | Invalid Auth Token is provided | 
 
 ---
 
